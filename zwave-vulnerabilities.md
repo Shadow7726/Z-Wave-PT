@@ -15,9 +15,8 @@
 | Command Injection     | Sending malformed input to handler functions could cause command injection and execution of arbitrary code.       | Attacker sends malformed packet that injects OS commands into smart bulb's command handler. Executes code on the device. | - Fuzz packet parameters. - Identify vulnerable input parameters. - Craft input strings with OS commands. - Execute arbitrary code.         |
 | Weaknesses in Protocol | Design weaknesses like lack of source authentication and integrity checking enable attacks like signal replay.    | Attacker replays captured "on" command due to lack of source authentication in Z-Wave protocol.                       | - Capture and analyze packets. - Replay commands without proper source validation.                                                               |
 
-Sure, here's the provided information formatted in Markdown:
 
-### Steps to Perform an Insecure Inclusion Attack on a Z-Wave Network:
+### 1.Steps to Perform an Insecure Inclusion Attack on a Z-Wave Network:
 
 1. **Obtain Hardware:**
    - Obtain a Z-Wave transceiver device like the Yardstick One or a Software Defined Radio (SDR) capable of transmitting on the 908MHz frequency band.
@@ -49,7 +48,7 @@ Sure, here's the provided information formatted in Markdown:
 10. **Verify Device Inclusion:**
     - Verify your device is included by checking the controller or attempting to control other devices on the network.
 
-### Intercepting and Decrypting Z-Wave Signals:
+### 2.Intercepting and Decrypting Z-Wave Signals:
 
 #### Hardware Used:
 - RTL-SDR USB dongle 
@@ -90,7 +89,7 @@ Sure, here's the provided information formatted in Markdown:
      d.RFxmit(decrypted_command)
      ```
 
-### Steps to Perform a Replay Attack on a Z-Wave Smart Lock:
+### 3.Steps to Perform a Replay Attack on a Z-Wave Smart Lock:
 
 #### Hardware Required:
 - Yardstick One transceiver
@@ -119,7 +118,7 @@ Sure, here's the provided information formatted in Markdown:
      d.RFxmit(hex_string)
      ```
 
-### Extracting and Using Hardcoded Encryption Keys from Z-Wave Device Firmware:
+### 4.Extracting and Using Hardcoded Encryption Keys from Z-Wave Device Firmware:
 
 #### Hardware Required:
 - Z-Wave device
@@ -146,7 +145,7 @@ Sure, here's the provided information formatted in Markdown:
    ```
 Sure, here's the information formatted in Markdown:
 
-### Forced Inclusion Attack on a Z-Wave Network using the BANANA Device:
+### 5.Forced Inclusion Attack on a Z-Wave Network using the BANANA Device:
 
 #### Hardware Required:
 - BANANA device
@@ -197,7 +196,7 @@ Sure, here's the information formatted in Markdown:
 10. **Successful Inclusion:**
     - The fake node will get included into the Z-Wave network.
 
-### Brute Force Attack on a Z-Wave Network PIN:
+### 6.Brute Force Attack on a Z-Wave Network PIN:
 
 #### Hardware Required:
 - Z-Wave transceiver like Yardstick One
@@ -225,7 +224,7 @@ Sure, here's the information formatted in Markdown:
 6. **Successful Inclusion:**
     - Once the correct PIN is found, the inclusion will succeed, granting access to the Z-Wave network.
 
-### De-encapsulation Attack to Replay Z-Wave Commands:
+### 7.De-encapsulation Attack to Replay Z-Wave Commands:
 
 #### Hardware Required:
 - RTL-SDR dongle 
@@ -262,23 +261,9 @@ By de-encapsulating packets, an attacker removes routing information to obtain r
 
 
 4. **Capture Z-Wave Signals:**
-   - Use RTL-SDR dongle with GQRX to capture Z-Wave signals.
-
-5. **Analyze Captured Signals:**
-   - Analyze packets in Audacity and decode commands.
-
-6. **Decrypt Packets:**
-   - Write Python script to decrypt captured payloads.
-
-7. **Craft New Packets:**
-   - Craft new packets with decrypted commands and encrypted with extracted key.
-
-8. **Transmit Crafted Packets:**
-   - Use Yardstick One to transmit crafted packets.
 
 
-
-### **Z-Wave Lock Firmware Downgrade Attack:**
+### 8.**Z-Wave Lock Firmware Downgrade Attack:**
 
 #### **Hardware Required:**
 - RTL-SDR dongle
@@ -306,7 +291,7 @@ By de-encapsulating packets, an attacker removes routing information to obtain r
 
 ---
 
-### **Command Injection Attack on a Z-Wave Smart Bulb:**
+### 9.**Command Injection Attack on a Z-Wave Smart Bulb:**
 
 #### **Hardware Required:**
 - Yardstick One transceiver
@@ -341,7 +326,7 @@ d.RFxmit(mal_packet)
 
 ---
 
-### **Replay Attack Exploiting Lack of Source Authentication in Z-Wave Protocol:**
+### 10.**Replay Attack Exploiting Lack of Source Authentication in Z-Wave Protocol:**
 
 #### **Hardware Required:**
 - RTL-SDR dongle
