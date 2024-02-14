@@ -144,6 +144,122 @@ Sure, here's the provided information formatted in Markdown:
    ```shell
    grep -R "AES" _lightbulb-firmware.bin.extracted
    ```
+Sure, here's the information formatted in Markdown:
+
+### Forced Inclusion Attack on a Z-Wave Network using the BANANA Device:
+
+#### Hardware Required:
+- BANANA device
+- Yardstick One transceiver
+- RTL-SDR dongle
+- Laptop with Kali Linux
+
+#### Software Required:
+- BANANA control software
+- Gqrx
+- RFcat
+- Audacity
+
+1. **Connect BANANA Device:**
+   - Connect the BANANA device to the Kali laptop via USB.
+
+2. **Start BANANA Control Software:**
+   ```shell
+   $ banana-control
+   ```
+
+3. **Configure BANANA for Jamming:**
+   - Configure BANANA for Z-Wave network jamming on 908MHz.
+
+4. **Activate Jamming:**
+   - Activate jamming to block controller communications.
+
+5. **Enter Inclusion Mode:**
+   - Z-Wave nodes will enter inclusion mode after timeout due to disrupted communication.
+
+6. **Capture Inclusion Packets:**
+   - Use RTL-SDR and Gqrx to capture inclusion packets.
+
+7. **Analyze Traffic:**
+   - Analyze traffic in Audacity to decode the inclusion command.
+
+8. **Craft Spoofed Inclusion Packet:**
+   - Craft a spoofed inclusion packet with the controller and fake node ID.
+
+9. **Replay Spoofed Packet:**
+   - Replay the spoofed packet using Yardstick One and RFcat:
+     ```shell
+     $ rfcat
+     d.setFreq(908400000)
+     d.RFxmit(spoofed_packet)
+     ```
+
+10. **Successful Inclusion:**
+    - The fake node will get included into the Z-Wave network.
+
+### Brute Force Attack on a Z-Wave Network PIN:
+
+#### Hardware Required:
+- Z-Wave transceiver like Yardstick One
+- Laptop with Kali Linux
+
+#### Software Required: 
+- RFcat for Yardstick One
+- Python script for brute forcing
+
+1. **Capture Network Key Exchange Frame:**
+   - Capture the Z-Wave network key exchange frame during inclusion using RTL-SDR dongle.
+
+2. **Extract PIN:**
+   - Extract the 24-bit network PIN from the captured inclusion packet.
+
+3. **Brute Force PIN:**
+   - Write a Python script to brute force the 24-bit PIN.
+
+4. **Use RFcat to Transmit Inclusion Command:**
+   - Transmit the inclusion command with guessed PIN using RFcat and Yardstick One.
+
+5. **Repeat Brute Force:**
+   - Repeat the brute force process, iterating through all 24-bit PIN combinations.
+
+6. **Successful Inclusion:**
+    - Once the correct PIN is found, the inclusion will succeed, granting access to the Z-Wave network.
+
+### De-encapsulation Attack to Replay Z-Wave Commands:
+
+#### Hardware Required:
+- RTL-SDR dongle 
+- Yardstick One transceiver
+- Laptop with Kali Linux
+
+#### Software Required:
+- Gqrx
+- Python
+- RFcat
+
+1. **Capture Z-Wave Packets:**
+   - Use RTL-SDR and Gqrx to capture Z-Wave packets between controller and nodes.
+
+2. **Analyze Packets:**
+   - Analyze packets in Audacity to understand Z-Wave framing.
+
+3. **Strip Encapsulation:**
+   - Write a Python script to strip the routing encapsulation and extract the command payload.
+
+4. **Decrypt Payload:**
+   - If the payload is encrypted, attempt to decrypt it using captured encryption keys.
+
+5. **Craft Raw Z-Wave Command Frame:**
+   - Craft a raw Z-Wave command frame with the decrypted payload.
+
+6. **Replay Raw Frame:**
+   - Use RFcat with Yardstick One to replay the raw frame.
+
+7. **Successful Replay:**
+    - The target node will process the raw Z-Wave command without encapsulation.
+
+By de-encapsulating packets, an attacker removes routing information to obtain raw command frames that can be replayed directly to nodes after decrypting payloads.
+
 
 4. **Capture Z-Wave Signals:**
    - Use RTL-SDR dongle with GQRX to capture Z-Wave signals.
