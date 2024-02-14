@@ -15,3 +15,148 @@
 | Command Injection     | Sending malformed input to handler functions could cause command injection and execution of arbitrary code.       | Attacker sends malformed packet that injects OS commands into smart bulb's command handler. Executes code on the device. | - Fuzz packet parameters. - Identify vulnerable input parameters. - Craft input strings with OS commands. - Execute arbitrary code.         |
 | Weaknesses in Protocol | Design weaknesses like lack of source authentication and integrity checking enable attacks like signal replay.    | Attacker replays captured "on" command due to lack of source authentication in Z-Wave protocol.                       | - Capture and analyze packets. - Replay commands without proper source validation.                                                               |
 
+Sure, here's the provided information formatted in Markdown:
+
+### Steps to Perform an Insecure Inclusion Attack on a Z-Wave Network:
+
+1. **Obtain Hardware:**
+   - Obtain a Z-Wave transceiver device like the Yardstick One or a Software Defined Radio (SDR) capable of transmitting on the 908MHz frequency band.
+
+2. **Identify Target Z-Wave Network:**
+   - Use a sniffer like Wireshark with a Z-Wave sniffing plugin to detect nearby Z-Wave traffic.
+
+3. **Put Target Z-Wave Network into Inclusion Mode:**
+   - Put the network into inclusion mode by pressing a button on the main controller or gateway.
+
+4. **Capture Z-Wave Packets:**
+   - Capture Z-Wave packets being transmitted while the network is in inclusion mode using the transceiver.
+
+5. **Analyze Traffic:**
+   - Use Audacity or other SIGINT software to reverse engineer the inclusion packets and identify the command, frequency, modulation, etc.
+
+6. **Craft Inclusion Packet:**
+   - Craft your own inclusion packet using the source ID of the controller and a fake node ID, including an encrypted payload if necessary.
+
+7. **Transmit Spoofed Inclusion Packet:**
+   - Use RFcat or similar software to transmit your spoofed inclusion packet at the exact Z-Wave frequency.
+
+8. **Verify Success:**
+   - If successful, your rogue device will be added to the Z-Wave network under your control.
+
+9. **Repeat if Necessary:**
+   - Repeat the inclusion process multiple times for full access.
+
+10. **Verify Device Inclusion:**
+    - Verify your device is included by checking the controller or attempting to control other devices on the network.
+
+### Intercepting and Decrypting Z-Wave Signals:
+
+#### Hardware Used:
+- RTL-SDR USB dongle 
+- Laptop running Kali Linux
+
+#### Software Used:
+1. **Set up RTL-SDR Dongle:**
+   ```shell
+   sudo apt install librtlsdr-dev rtl-sdr
+   ```
+
+2. **Tune to Z-Wave Frequency:**
+   - Open GQRX:
+     ```shell
+     gqrx
+     ```
+   - Set frequency to 908MHz and capture traffic.
+
+3. **Analyze Captured Data:**
+   - Open in Audacity and look for known Z-Wave preamble.
+
+4. **Decode Packets:**
+   - Use GNU Radio companion and decode blocks to output decoded packets.
+
+5. **Decrypt Packets:**
+   - Extract encryption key from captured packet.
+   - Perform AES 128 decryption in Python:
+     ```python
+     from Crypto.Cipher import AES
+     aes = AES.new(key, AES.MODE_ECB)
+     plaintext = aes.decrypt(encrypted_payload)
+     ```
+
+6. **Replay Decrypted Commands:**
+   - Use RFcat with Yardstick One to transmit decrypted commands:
+     ```shell
+     d.setFreq(908400000)
+     d.RFxmit(decrypted_command)
+     ```
+
+### Steps to Perform a Replay Attack on a Z-Wave Smart Lock:
+
+#### Hardware Required:
+- Yardstick One transceiver
+- Laptop with Kali Linux OS
+
+#### Software Required:
+- RFcat software for Yardstick One
+- Audacity for signal analysis
+
+1. **Put Z-Wave Network into Learning Mode:**
+   - Initiate learning mode on the Z-Wave network.
+
+2. **Capture Traffic:**
+   - Use RTL-SDR dongle to capture Z-Wave traffic.
+
+3. **Analyze Captured Signals:**
+   - Use Audacity to analyze captured signals and identify the "Unlock door" command.
+
+4. **Craft Replay Packet:**
+   - Convert the "Unlock door" command bits to a hex string.
+
+5. **Transmit Replay Packet:**
+   - Use RFcat with Yardstick One to transmit the replayed packet:
+     ```shell
+     d.setFreq(908400000)
+     d.RFxmit(hex_string)
+     ```
+
+### Extracting and Using Hardcoded Encryption Keys from Z-Wave Device Firmware:
+
+#### Hardware Required:
+- Z-Wave device
+- RTL-SDR dongle
+- Laptop with Kali Linux
+
+#### Software Required:
+- binwalk
+- python-crypto
+- gqrx
+- rfcat
+
+1. **Obtain Firmware:**
+   - Obtain firmware image file for the Z-Wave device.
+
+2. **Extract Firmware:**
+   ```shell
+   binwalk -e lightbulb-firmware.bin
+   ```
+
+3. **Search for Encryption Keys:**
+   ```shell
+   grep -R "AES" _lightbulb-firmware.bin.extracted
+   ```
+
+4. **Capture Z-Wave Signals:**
+   - Use RTL-SDR dongle with GQRX to capture Z-Wave signals.
+
+5. **Analyze Captured Signals:**
+   - Analyze packets in Audacity and decode commands.
+
+6. **Decrypt Packets:**
+   - Write Python script to decrypt captured payloads.
+
+7. **Craft New Packets:**
+   - Craft new packets with decrypted commands and encrypted with extracted key.
+
+8. **Transmit Crafted Packets:**
+   - Use Yardstick One to transmit crafted packets.
+
