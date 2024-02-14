@@ -18,3 +18,56 @@
 | Software | OpenZWave Libraries    | Variations like OpenZWave Control Panel or OpenZWave-Cpp offer various functionalities for interacting with Z-Wave devices. | Potentially, for interacting with Z-Wave devices. |
 | Software | Custom Python Scripts  | Custom Python scripts utilizing libraries like Scapy or RadioTap for advanced Z-Wave packet manipulation and analysis. | Yes, for advanced packet manipulation and analysis. |
 
+# EZ-Wave, a Z-Wave hacking tool:
+
+**Overview**
+
+- EZ-Wave is an open source Python-based tool for analyzing and attacking Z-Wave networks. 
+
+- It allows intercepting, decrypting, and replaying Z-Wave traffic using software defined radios.
+
+- EZ-Wave supports multiple SDR hardware like HackRF, BladeRF, RTL-SDR.
+
+**Configuration**
+
+- Install prerequisites like Python 2.7, PyCrypto, Numpy, Scipy
+
+- Install Pyserial and required SDR drivers
+
+- Clone EZ-Wave github repository:
+
+```
+git clone https://github.com/probonopd/EZ-Wave.git
+```
+
+- Edit ezwave.cfg to specify SDR parameters
+
+**Usage** 
+
+- Plug in supported SDR hardware and start EZ-Wave:
+
+```
+python ezwave.py
+```
+
+- Scan for Z-Wave networks with the 'scan' command
+
+- Sniff traffic on a network using the 'sniff' command
+
+- Capture and replay packets with 'get' and 'send'
+
+- Brute force captured network PINs with 'bfp'
+
+- Crack encryption and decrypt packets using 'crack' and 'decrypt'
+
+**SDR Connection**
+
+- EZ-Wave supports RTL-SDR, HackRF, BladeRF.
+
+- USB connection from SDR to computer running EZ-Wave.
+
+- May require USB hub for multiple SDRs.
+
+- Edit ezwave.cfg to specify correct SDR hardware.
+
+So in summary, EZ-Wave provides an automated tool for Z-Wave hacks using cheap SDR hardware and various analysis features accessible via CLI.
