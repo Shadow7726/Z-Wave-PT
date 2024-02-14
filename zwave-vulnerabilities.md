@@ -1,4 +1,4 @@
----
+
 # Z-wave Vulnerabilities
 
 
@@ -276,9 +276,7 @@ By de-encapsulating packets, an attacker removes routing information to obtain r
 8. **Transmit Crafted Packets:**
    - Use Yardstick One to transmit crafted packets.
 
-Certainly! Below is the information organized in Markdown format along with the provided code snippets:
 
----
 
 ### **Z-Wave Lock Firmware Downgrade Attack:**
 
@@ -378,6 +376,3 @@ d.RFxmit(hex_string)
 
 10. The replayed packet will turn on the light without any authentication.
 
----
-
-These are the step-by-step procedures for each attack scenario. Let me know if you need any further assistance!
