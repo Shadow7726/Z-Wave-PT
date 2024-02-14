@@ -276,3 +276,108 @@ By de-encapsulating packets, an attacker removes routing information to obtain r
 8. **Transmit Crafted Packets:**
    - Use Yardstick One to transmit crafted packets.
 
+Certainly! Below is the information organized in Markdown format along with the provided code snippets:
+
+---
+
+### **Z-Wave Lock Firmware Downgrade Attack:**
+
+#### **Hardware Required:**
+- RTL-SDR dongle
+- Yardstick One transceiver
+- Laptop with Kali Linux
+
+#### **Software Required:**
+- Gqrx
+- KillerBee framework
+- Old vulnerable firmware binary
+- Exploit code
+
+#### **Steps:**
+1. Analyze Z-Wave API commands for firmware update using KillerBee and an SDR.
+2. Craft a raw Z-Wave command frame for outdated firmware version OTA update.
+3. Spoof the controller node ID in the firmware update command.
+4. Transmit firmware update command to the lock using Yardstick One.
+5. Lock receives update and reboots with vulnerable firmware.
+6. Use the SDR to capture encrypted Z-Wave traffic.
+7. Extract encryption keys from captured packets.
+8. Decrypt command payload and analyze protocol.
+9. Identify authentication bypass bug in old firmware.
+10. Craft raw Z-Wave command to exploit the bug and unlock door.
+11. Transmit crafted command to unlock the door.
+
+---
+
+### **Command Injection Attack on a Z-Wave Smart Bulb:**
+
+#### **Hardware Required:**
+- Yardstick One transceiver
+- Laptop with Kali Linux
+
+#### **Software Required:**
+- rfcat for Yardstick One
+- Audacity for analyzing captured packets
+- Python for packet crafting
+
+#### **Steps:**
+1. Capture normal Z-Wave packets sent to smart bulb using RTL-SDR dongle.
+2. Analyze captured packets in Audacity to understand packet structure.
+3. Identify command fields in packet that are processed by the device firmware.
+4. Craft malicious packets in Python with `;` and other chars to break out of command parsing.
+5. Attempt to inject OS commands into the command fields:
+
+```python
+mal_packet = "SET Color =RED; cat /etc/passwd > /tmp/out" 
+```
+
+6. Transmit the crafted packet using Yardstick One:
+
+```python
+rfcat
+d.RFxmit(mal_packet)
+```
+
+7. If command injection is successful, output of the OS command will be written to file.
+8. Other impacts like code execution, DoS can also be achieved depending on the exploited device and injection point.
+9. Repeat by fuzzing different packet fields to identify other injection points.
+
+---
+
+### **Replay Attack Exploiting Lack of Source Authentication in Z-Wave Protocol:**
+
+#### **Hardware Required:**
+- RTL-SDR dongle
+- Yardstick One transceiver
+- Laptop with Kali Linux
+
+#### **Software Required:**
+- Gqrx
+- RFcat
+- Audacity
+
+#### **Steps:**
+1. Use the RTL-SDR and Gqrx to capture normal traffic between the Z-Wave controller and devices.
+2. Analyze the captured traffic in Audacity to identify the packet structure.
+3. Note that there are no source or authentication fields in the Z-Wave packet.
+4. Identify a command packet like "Turn light ON".
+5. Select the encoded signal bits for this command packet in Audacity.
+6. Export the selected bits as a raw audio file.
+7. Open RFcat and set Yardstick One to the desired Z-Wave frequency:
+
+```python
+rfcat
+d.setFreq(908400000)
+```
+
+8. Convert the captured command bits to a hex string.
+9. Transmit the captured command packet using RFcat:
+
+```python
+d.RFxmit(hex_string)
+```
+
+10. The replayed packet will turn on the light without any authentication.
+
+---
+
+These are the step-by-step procedures for each attack scenario. Let me know if you need any further assistance!
