@@ -71,3 +71,68 @@ python ezwave.py
 - Edit ezwave.cfg to specify correct SDR hardware.
 
 So in summary, EZ-Wave provides an automated tool for Z-Wave hacks using cheap SDR hardware and various analysis features accessible via CLI.
+
+Here are some of the key features and usage examples of EZ-Wave:
+
+**Features**
+
+- Traffic sniffing - Intercept Z-Wave traffic using an SDR and decrypt if encryption keys are known.
+
+- Packet capture and replay - Capture Z-Wave packets and retransmit to mimic the controller or other nodes. 
+
+- Brute force cracking - Crack network PINs by brute forcing all possible combinations.
+
+- Encryption cracking - Extract encryption keys from captured packets and use them to decrypt payload.
+
+- Network scanning - Scan for nearby Z-Wave networks by sweeping frequency range.
+
+- Decapsulation - Remove network encapsulation to obtain raw Z-Wave packets. 
+
+- Jamming - Transmit noise on Z-Wave frequencies to disrupt the network.
+
+**Usage Examples**
+
+- Sniff traffic:
+
+```
+ezwave> sniff 90 868.42
+```
+
+- Capture on/off command: 
+
+```
+ezwave> get on
+ezwave> get off
+```
+
+- Replay captured on command:
+
+``` 
+ezwave> send on
+```
+
+- Brute force network PIN:
+
+```
+ezwave> bfp 90 868.42
+``` 
+
+- Crack encryption with known plaintext:
+
+```
+ezwave> crack 90 868.42
+```
+
+- Decrypt captured packets: 
+
+```
+ezwave> decrypt packets.pcap
+```
+
+- Scan for Z-Wave networks:
+
+```
+ezwave> scan 868.0 868.6
+```
+
+
