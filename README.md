@@ -150,7 +150,7 @@ This Z-Wave routing layer consists of two kinds of frames. These are used when r
 - Routed Singlecast Frame Type: It is a one node destination frame with acknowledgment which contains repeater information. The frame is repeated from one repeater to another until it reaches the desired destination.
 - Routed Acknowledge Frame Type: This acknowledgment frame is a routed singlecast frame without payload. This will inform the controller that the routed singlecast frame has reached the desired destination.
 
-```
+
 | 1 | 2 | 3 | 4 | 5 | 6 |
 |---|---|---|---|---|---|
 | 1 | 0 | 1 | 1 | 0 | 0 |
@@ -159,7 +159,6 @@ This Z-Wave routing layer consists of two kinds of frames. These are used when r
 | 4 | 0 | 0 | 0 | 0 | 1 |
 | 5 | 0 | 1 | 0 | 1 | 0 |
 | 6 | 0 | 0 | 0 | 0 | 0 |
-```
 
 Table-1: Z-Wave routing table
 
