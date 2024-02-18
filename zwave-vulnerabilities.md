@@ -354,7 +354,7 @@ This allows replaying captured commands by extracting just the bare payload and 
 - Exploit code
 
 #### **Steps:**
-1. Analyze Z-Wave API commands for firmware update using KillerBee and an SDR.
+1. Analyze Z-Wave API commands for firmware update using Binwalk and an SDR.
 2. Craft a raw Z-Wave command frame for outdated firmware version OTA update.
 3. Spoof the controller node ID in the firmware update command.
 4. Transmit firmware update command to the lock using Yardstick One.
