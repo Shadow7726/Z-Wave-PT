@@ -353,20 +353,47 @@ This allows replaying captured commands by extracting just the bare payload and 
 - Old vulnerable firmware binary
 - Exploit code
 
-#### **Steps:**
-1. Analyze Z-Wave API commands for firmware update using Binwalk and an SDR.
-2. Craft a raw Z-Wave command frame for outdated firmware version OTA update.
-3. Spoof the controller node ID in the firmware update command.
-4. Transmit firmware update command to the lock using Yardstick One.
-5. Lock receives update and reboots with vulnerable firmware.
-6. Use the SDR to capture encrypted Z-Wave traffic.
-7. Extract encryption keys from captured packets.
-8. Decrypt command payload and analyze protocol.
-9. Identify authentication bypass bug in old firmware.
-10. Craft raw Z-Wave command to exploit the bug and unlock door.
-11. Transmit crafted command to unlock the door.
+Here are the steps to perform a Z-Wave door lock firmware downgrade attack using SDR tools:
 
----
+1. Identify target Z-Wave door lock and obtain older vulnerable firmware version.
+
+2. Use a yardstick one as the transceiver.
+
+3. Put lock into firmware update mode:
+
+```
+rfcat -r yardstick 
+d.setFreq(908420000)
+d.makePkt(update_command)
+d.RFxmit(pkt)
+```
+
+4. Capture firmware update request packet using RTL-SDR. 
+
+5. Use URH to analyze and reconstruct firmware update packet.
+
+6. Modify firmware version number in packet to older vulnerable version. 
+
+7. Use rfcat to transmit the modified firmware update packet:
+
+```python
+d.makePkt(modified_pkt)
+d.RFxmit(pkt) 
+```
+
+8. Device will receive firmware update and reboot with old firmware.
+
+9. Capture traffic between lock and controller using RTL-SDR.
+
+10. Crack encryption using captured network key. 
+
+11. Analyze protocol and identify auth bypass vulnerability in old firmware.
+
+12. Craft command to exploit vulnerability and open lock.
+
+13. Transmit crafted command with rfcat to unlock door.
+
+This leverages SDR tools like yardstick one and RTL-SDR to intercept and modify the firmware update process to downgrade the lock firmware and then exploit a vulnerability in the older version.
 
 ### 9.**Command Injection Attack on a Z-Wave Smart Bulb:**
 
