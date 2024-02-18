@@ -339,8 +339,6 @@ d.RFxmit(frame)
 
 This allows replaying captured commands by extracting just the bare payload and transmitting it within a raw Z-Wave frame.
 
-4. **Capture Z-Wave Signals:**
-
 
 ### 8.**Z-Wave Lock Firmware Downgrade Attack:**
 
