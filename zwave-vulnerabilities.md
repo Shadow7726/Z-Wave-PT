@@ -448,7 +448,7 @@ d.RFxmit(mal_packet)
 3. Note that there are no source or authentication fields in the Z-Wave packet.
 4. Identify a command packet like "Turn light ON".
 5. Select the encoded signal bits for this command packet in Audacity.
-6. Export the selected bits as a raw audio file.
+6. Z-Wave Sniffer: This dedicated software specifically reads and interprets Z-Wave traffic, decoding individual packets and displaying information like device IDs, command types, and data values.
 7. Open RFcat and set Yardstick One to the desired Z-Wave frequency:
 
 ```python
