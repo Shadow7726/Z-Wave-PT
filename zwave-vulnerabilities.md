@@ -71,54 +71,60 @@ This outlines the specific steps using the SDR hardware and open source SIGINT t
 
 ### 2.Intercepting and Decrypting Z-Wave Signals:
 
-#### Hardware Used:
-- RTL-SDR USB dongle 
+**Intercepting and Decrypting Z-Wave Signals**
+
+**Hardware Used:**
+- RTL-SDR USB dongle
 - Laptop running Kali Linux
 
-#### Software Used:
+**Software Used:**
 1. **Set up RTL-SDR Dongle:**
-   ```shell
-   sudo apt install librtlsdr-dev rtl-sdr
-   ```
+```bash
+sudo apt install librtlsdr-dev rtl-sdr
+```
 
 2. **Tune to Z-Wave Frequency:**
    - Open GQRX:
-     ```shell
-     gqrx
-     ```
+   ```bash
+   gqrx
+   ```
    - Set frequency to 908MHz and capture traffic.
 
 3. **Analyze Captured Data:**
-   - Open in Audacity and look for known Z-Wave preamble.
+   - Open Zniffer and import captured data file.
+   - Look for known Z-Wave preamble patterns.
 
 4. **Decode Packets:**
-   - Use GNU Radio companion and decode blocks to output decoded packets.
+   - Use GNU Radio Companion and decode blocks to output decoded packets.
 
 5. **Decrypt Packets:**
    - Extract encryption key from captured packet.
    - Perform AES 128 decryption in Python:
-     ```python
-     from Crypto.Cipher import AES
-     aes = AES.new(key, AES.MODE_ECB)
-     plaintext = aes.decrypt(encrypted_payload)
-     ```
+   ```python
+   from Crypto.Cipher import AES
+   aes = AES.new(key, AES.MODE_ECB)
+   plaintext = aes.decrypt(encrypted_payload)
+   ```
 
 6. **Replay Decrypted Commands:**
    - Use RFcat with Yardstick One to transmit decrypted commands:
-     ```shell
-     d.setFreq(908400000)
-     d.RFxmit(decrypted_command)
-     ```
+   ```python
+   d.setFreq(908400000)
+   d.RFxmit(decrypted_command)
+   ```
+
+---
 
 ### 3.Steps to Perform a Replay Attack on a Z-Wave Smart Lock:
 
-#### Hardware Required:
+
+**Hardware Required:**
 - Yardstick One transceiver
 - Laptop with Kali Linux OS
 
-#### Software Required:
+**Software Required:**
 - RFcat software for Yardstick One
-- Audacity for signal analysis
+- Zniffer for signal analysis
 
 1. **Put Z-Wave Network into Learning Mode:**
    - Initiate learning mode on the Z-Wave network.
@@ -127,7 +133,7 @@ This outlines the specific steps using the SDR hardware and open source SIGINT t
    - Use RTL-SDR dongle to capture Z-Wave traffic.
 
 3. **Analyze Captured Signals:**
-   - Use Audacity to analyze captured signals and identify the "Unlock door" command.
+   - Use Zniffer to analyze captured signals and identify the "Unlock door" command.
 
 4. **Craft Replay Packet:**
    - Convert the "Unlock door" command bits to a hex string.
@@ -168,31 +174,30 @@ Sure, here's the information formatted in Markdown:
 
 ### 5.Forced Inclusion Attack on a Z-Wave Network using the BANANA Device:
 
-#### Hardware Required:
-- BANANA device
+
+**Hardware Required:**
+- RF jammer
 - Yardstick One transceiver
 - RTL-SDR dongle
 - Laptop with Kali Linux
 
-#### Software Required:
-- BANANA control software
+**Software Required:**
+- RF jammer control software
 - Gqrx
 - RFcat
-- Audacity
+- Zniffer
 
-1. **Connect BANANA Device:**
-   - Connect the BANANA device to the Kali laptop via USB.
+1. **Connect RF Jammer:**
+   - Connect the RF jammer to the Kali laptop via USB.
 
-2. **Start BANANA Control Software:**
-   ```shell
-   $ banana-control
-   ```
+2. **Start RF Jammer Control Software:**
+   - Start the control software for the RF jammer.
 
-3. **Configure BANANA for Jamming:**
-   - Configure BANANA for Z-Wave network jamming on 908MHz.
+3. **Configure RF Jammer for Z-Wave Frequency:**
+   - Configure the RF jammer to operate on the Z-Wave frequency (908MHz).
 
 4. **Activate Jamming:**
-   - Activate jamming to block controller communications.
+   - Activate the RF jammer to block Z-Wave controller communications.
 
 5. **Enter Inclusion Mode:**
    - Z-Wave nodes will enter inclusion mode after timeout due to disrupted communication.
@@ -201,7 +206,7 @@ Sure, here's the information formatted in Markdown:
    - Use RTL-SDR and Gqrx to capture inclusion packets.
 
 7. **Analyze Traffic:**
-   - Analyze traffic in Audacity to decode the inclusion command.
+   - Analyze traffic in Zniffer to decode the inclusion command.
 
 8. **Craft Spoofed Inclusion Packet:**
    - Craft a spoofed inclusion packet with the controller and fake node ID.
@@ -216,6 +221,7 @@ Sure, here's the information formatted in Markdown:
 
 10. **Successful Inclusion:**
     - The fake node will get included into the Z-Wave network.
+
 
 ### 6.Brute Force Attack on a Z-Wave Network PIN:
 
@@ -432,36 +438,46 @@ d.RFxmit(mal_packet)
 
 ### 10.**Replay Attack Exploiting Lack of Source Authentication in Z-Wave Protocol:**
 
-#### **Hardware Required:**
+### Hardware Required:
+
 - RTL-SDR dongle
-- Yardstick One transceiver
+- Yardstick One transceiver  
 - Laptop with Kali Linux
 
-#### **Software Required:**
+### Software Required: 
+
 - Gqrx
 - RFcat
-- Audacity
+- Zniffer
 
-#### **Steps:**
+### Steps:
+
 1. Use the RTL-SDR and Gqrx to capture normal traffic between the Z-Wave controller and devices.
-2. Analyze the captured traffic in Audacity to identify the packet structure.
-3. Note that there are no source or authentication fields in the Z-Wave packet.
-4. Identify a command packet like "Turn light ON".
-5. Select the encoded signal bits for this command packet in Audacity.
-6. Z-Wave Sniffer: This dedicated software specifically reads and interprets Z-Wave traffic, decoding individual packets and displaying information like device IDs, command types, and data values.
+
+2. Open the captured traffic in Zniffer and analyze the packets.
+
+3. Note the lack of source or authentication fields in the Z-Wave packets. 
+
+4. Identify a command packet like "Turn light ON" in Zniffer.
+
+5. Highlight the encoded signal bits for this command packet in Zniffer.
+
+6. Copy the highlighted binary data to a hex editor like Bless to convert to hex.
+
 7. Open RFcat and set Yardstick One to the desired Z-Wave frequency:
 
 ```python
 rfcat
-d.setFreq(908400000)
+d.setFreq(908400000)  
 ```
 
-8. Convert the captured command bits to a hex string.
-9. Transmit the captured command packet using RFcat:
+8. Paste the hex string from the command packet into RFcat.
+
+9. Transmit the captured command packet using RFcat: 
 
 ```python
 d.RFxmit(hex_string)
 ```
 
-10. The replayed packet will turn on the light without any authentication.
+10. The replayed packet will turn on the light without authentication.
 
