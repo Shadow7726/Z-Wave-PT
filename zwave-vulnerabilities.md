@@ -18,35 +18,56 @@
 
 ### 1.Steps to Perform an Insecure Inclusion Attack on a Z-Wave Network:
 
-1. **Obtain Hardware:**
-   - Obtain a Z-Wave transceiver device like the Yardstick One or a Software Defined Radio (SDR) capable of transmitting on the 908MHz frequency band.
+Hardware Required:
+- RTL-SDR Software Defined Radio 
+- Yardstick One Transceiver
 
-2. **Identify Target Z-Wave Network:**
-   - Use a sniffer like Wireshark with a Z-Wave sniffing plugin to detect nearby Z-Wave traffic.
+Software Required: 
+- Kali Linux OS
+- GQRX (for signal analysis)
+- GNU Radio (for signal decoding)
+- RFcat (for packet transmission)
 
-3. **Put Target Z-Wave Network into Inclusion Mode:**
-   - Put the network into inclusion mode by pressing a button on the main controller or gateway.
+Steps:
 
-4. **Capture Z-Wave Packets:**
-   - Capture Z-Wave packets being transmitted while the network is in inclusion mode using the transceiver.
+1. Put the Z-Wave network into inclusion mode.
 
-5. **Analyze Traffic:**
-   - Use Audacity or other SIGINT software to reverse engineer the inclusion packets and identify the command, frequency, modulation, etc.
+2. Use the RTL-SDR to capture inclusion traffic:
 
-6. **Craft Inclusion Packet:**
-   - Craft your own inclusion packet using the source ID of the controller and a fake node ID, including an encrypted payload if necessary.
+```
+gqrx #Open GQRX 
+Set frequency to 908.42MHz
+Capture traffic to file
+```
 
-7. **Transmit Spoofed Inclusion Packet:**
-   - Use RFcat or similar software to transmit your spoofed inclusion packet at the exact Z-Wave frequency.
+3. Analyze the captured traffic in GNU Radio:
 
-8. **Verify Success:**
-   - If successful, your rogue device will be added to the Z-Wave network under your control.
+```
+gnuradio-companion #Open flowgraph
+Decode FSK modulation
+Decode Manchester encoding
+Analyze packets
+```
 
-9. **Repeat if Necessary:**
-   - Repeat the inclusion process multiple times for full access.
+4. Identify the inclusion command packet. 
 
-10. **Verify Device Inclusion:**
-    - Verify your device is included by checking the controller or attempting to control other devices on the network.
+5. Craft an inclusion packet with RFcat:
+
+```
+rfcat
+d.setFreq(908420000)  
+d.makePktFLEN(100)
+pkt = "0x01..." # Spoofed packet 
+d.RFxmit(pkt)
+```
+
+6. Set the Yardstick One to transmit on 908.42MHz.
+
+7. Transmit the spoofed inclusion packet with RFcat using the Yardstick One.
+
+8. Verify the attack worked by checking the controller or attempting to control other devices.
+
+This outlines the specific steps using the SDR hardware and open source SIGINT tools to intercept, analyze, and transmit a spoofed inclusion packet to add an unauthorized device to the target Z-Wave network.
 
 ### 2.Intercepting and Decrypting Z-Wave Signals:
 
