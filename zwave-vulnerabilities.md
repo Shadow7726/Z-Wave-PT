@@ -405,36 +405,44 @@ This leverages SDR tools like yardstick one and RTL-SDR to intercept and modify 
 
 #### **Hardware Required:**
 - Yardstick One transceiver
+- RTL-SDR dongle
 - Laptop with Kali Linux
 
 #### **Software Required:**
 - rfcat for Yardstick One
-- Audacity for analyzing captured packets
+- Zniffer or Wireshark for packet analysis
 - Python for packet crafting
 
 #### **Steps:**
-1. Capture normal Z-Wave packets sent to smart bulb using RTL-SDR dongle.
-2. Analyze captured packets in Audacity to understand packet structure.
-3. Identify command fields in packet that are processed by the device firmware.
-4. Craft malicious packets in Python with `;` and other chars to break out of command parsing.
-5. Attempt to inject OS commands into the command fields:
+1. **Capture Normal Z-Wave Packets:**
+   - Use RTL-SDR dongle to capture Z-Wave packets sent to the smart bulb.
 
-```python
-mal_packet = "SET Color =RED; cat /etc/passwd > /tmp/out" 
-```
+2. **Analyze Captured Packets:**
+   - Analyze captured packets in Zniffer or Wireshark to understand the packet structure and identify command fields processed by the device firmware.
 
-6. Transmit the crafted packet using Yardstick One:
+3. **Identify Injection Points:**
+   - Identify fields in the packet where injection might be possible, such as user input fields or command parameters.
 
-```python
-rfcat
-d.RFxmit(mal_packet)
-```
+4. **Craft Malicious Packets:**
+   - Use Python to craft malicious packets with injected commands:
+     ```python
+     mal_packet = "SET Color =RED; cat /etc/passwd > /tmp/out" 
+     ```
 
-7. If command injection is successful, output of the OS command will be written to file.
-8. Other impacts like code execution, DoS can also be achieved depending on the exploited device and injection point.
-9. Repeat by fuzzing different packet fields to identify other injection points.
+5. **Transmit Crafted Packet:**
+   - Transmit the crafted packet using Yardstick One:
+     ```shell
+     rfcat
+     d.RFxmit(mal_packet)
+     ```
 
----
+6. **Verify Injection Success:**
+   - Monitor the device's behavior to verify if the injected command was successful.
+   - Check for the desired output (e.g., `/etc/passwd` contents written to a file) to confirm successful injection.
+
+7. **Further Analysis and Fuzzing:**
+   - Repeat the process by fuzzing different packet fields to identify additional injection points and potential vulnerabilities.
+
 
 ### 10.**Replay Attack Exploiting Lack of Source Authentication in Z-Wave Protocol:**
 
