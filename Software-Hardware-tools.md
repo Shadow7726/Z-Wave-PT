@@ -135,3 +135,121 @@ ezfingerprint.py homeid nodeid
 ezfingerprint.py 0x1a2b3c4d 20
 ```
 
+Here are the complete steps for installing GNU Radio and Gqrx on different operating systems:
+
+**Linux:**
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install gnuradio gnuradio-companion gr-osmosdr gqrx
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S gnuradio gnuradio-companion gr-osmosdr gqrx
+```
+
+**Other Linux distributions:** 
+Consult your distribution's package manager or install from source (see below).
+
+**macOS:**
+1. Install Xcode Command Line Tools.
+2. Download macOS Radioconda installer (x86_64 or aarch64) from gnuradio.org.
+3. Run the installer and follow the instructions.
+4. Launch "GNU Radio Companion" from the Start menu.
+
+**Windows:**
+1. Download Windows Radioconda installer from gnuradio.org.
+2. Run the installer and follow the instructions.
+3. Launch "GNU Radio Companion" from the Start menu.
+
+Here are more details on installing GNU Radio and the gr-zwave module to decode Z-Wave with a HackRF One:
+
+**Install GNU Radio**
+
+- On Linux, install from your package manager, e.g:
+
+```bash
+sudo apt install gnuradio
+```
+
+- On Mac, install via Homebrew: 
+
+```bash
+brew install gnuradio
+```
+
+- On Windows, install via pre-built binaries or PyBOMBS
+
+**Install gr-zwave module**
+
+- Clone the gr-zwave repository:
+
+```bash 
+git clone https://github.com/bastibl/gr-zwave
+```
+
+- Build and install the module:
+
+```bash
+cd gr-zwave
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+```
+
+- This will install gr-zwave to your GNU Radio module path
+
+**Verify Installation**
+
+- Launch GNU Radio Companion 
+- You should see the Z-Wave Decoder block under the gr-zwave category
+- Try creating a flowgraph using the HackRF Source and Z-Wave Decoder
+
+---
+
+Here is an example of how to capture and analyze Z-Wave signals using the HackRF One with GNU Radio, along with some sample commands and output:
+
+**Hardware Setup:**
+
+- Connect HackRF One via USB and attach 900 MHz antenna
+
+**Software Setup:**
+
+- Install GNU Radio and gr-zwave module
+- Open GNU Radio Companion and build flowgraph:
+
+```
+hackrf_source -> freq_xlating_fir_filter -> low_pass_filter -> zwave_decoder -> file_sink -> message_debug
+```
+
+- Set hackrf_source sample rate to 2 MS/s
+- Set freq_xlating_fir_filter to translate to 908.42 MHz  
+- Set low_pass_filter cutoff to 500 kHz
+
+**Commands:**
+
+- Click Generate to compile flowgraph 
+- Click Play to start receiving
+- Tune hackrf_source frequency offset to center on 908.42 MHz
+
+**Sample Output:**
+
+- Bring Z-Wave device near antenna
+- Check file_sink to save capture to file
+- Check message_debug which prints decoded packets:
+
+```
+ZL7 Address: 0x01 0x17 0x70 Node: 23 
+ZL7 Command: 0x20 Seq: 0x05 
+ZL7 Payload: 0x05 0xB2 0x4E 0x50 0x01 0xFF 0x00
+```
+
+- We can see a Z-Wave packet from node 23 was decoded 
+- It has command 0x20 and payload with battery level (0xB2), firmware version etc.
+
+This allows analyzing raw Z-Wave signals easily with HackRF One SDR and GNU Radio flowgraph. We can tune settings as needed for better captures.
