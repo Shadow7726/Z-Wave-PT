@@ -18,121 +18,116 @@
 | Software | OpenZWave Libraries    | Variations like OpenZWave Control Panel or OpenZWave-Cpp offer various functionalities for interacting with Z-Wave devices. | Potentially, for interacting with Z-Wave devices. |
 | Software | Custom Python Scripts  | Custom Python scripts utilizing libraries like Scapy or RadioTap for advanced Z-Wave packet manipulation and analysis. | Yes, for advanced packet manipulation and analysis. |
 
-# EZ-Wave, a Z-Wave hacking tool:
+# EZ-Wave
+EZ-Wave: Tools for Evaluating and Exploiting Z-Wave Networks using Software-Defined Radios.
 
-**Overview**
+ezstumbler: passive Z-Wave network discovery and active network enumeration
 
-- EZ-Wave is an open source Python-based tool for analyzing and attacking Z-Wave networks. 
+ezrecon: Z-Wave device interrogation including:
+	- Manufacturer and device name
+	- Software/firmware versions
+	- Supported Z-Wave command classes
+	- Device configuration settings
 
-- It allows intercepting, decrypting, and replaying Z-Wave traffic using software defined radios.
+ezfingerprint: determines device's Z-Wave module generation (3rd or 5th gen) using a PHY layer manipulation technique (preamble length manipulation).
 
-- EZ-Wave supports multiple SDR hardware like HackRF, BladeRF, RTL-SDR.
+# Requirements
 
-**Configuration**
+**Tested on Ubuntu 14.04 only
 
-- Install prerequisites like Python 2.7, PyCrypto, Numpy, Scipy
+Python 2.7
 
-- Install Pyserial and required SDR drivers
+GNU Radio 3.7+ (recommend Pybombs: https://gnuradio.org/redmine/projects/pybombs/wiki/QuickStart)
 
-- Clone EZ-Wave github repository:
+Wireshark 1.12+ (https://code.wireshark.org/review/wireshark)
 
-```
-git clone https://github.com/probonopd/EZ-Wave.git
-```
+Mercurial (sudo apt-get install mercurial -y)
 
-- Edit ezwave.cfg to specify SDR parameters
+**Default configuration is for 2 HackRF One SDRs. Other SDRs can be use by modifying the GRC files accordingly post install ($HOME/.scapy/radio).
 
-**Usage** 
+OsmocomSDR (http://sdr.osmocom.org/trac/wiki/GrOsmoSDR)
 
-- Plug in supported SDR hardware and start EZ-Wave:
+HackRF host software (https://github.com/mossmann/hackrf/tree/master/host)
 
-```
-python ezwave.py
-```
+# Installation
 
-- Scan for Z-Wave networks with the 'scan' command
-
-- Sniff traffic on a network using the 'sniff' command
-
-- Capture and replay packets with 'get' and 'send'
-
-- Brute force captured network PINs with 'bfp'
-
-- Crack encryption and decrypt packets using 'crack' and 'decrypt'
-
-**SDR Connection**
-
-- EZ-Wave supports RTL-SDR, HackRF, BladeRF.
-
-- USB connection from SDR to computer running EZ-Wave.
-
-- May require USB hub for multiple SDRs.
-
-- Edit ezwave.cfg to specify correct SDR hardware.
-
-So in summary, EZ-Wave provides an automated tool for Z-Wave hacks using cheap SDR hardware and various analysis features accessible via CLI.
-
-Here are some of the key features and usage examples of EZ-Wave:
-
-**Features**
-
-- Traffic sniffing - Intercept Z-Wave traffic using an SDR and decrypt if encryption keys are known.
-
-- Packet capture and replay - Capture Z-Wave packets and retransmit to mimic the controller or other nodes. 
-
-- Brute force cracking - Crack network PINs by brute forcing all possible combinations.
-
-- Encryption cracking - Extract encryption keys from captured packets and use them to decrypt payload.
-
-- Network scanning - Scan for nearby Z-Wave networks by sweeping frequency range.
-
-- Decapsulation - Remove network encapsulation to obtain raw Z-Wave packets. 
-
-- Jamming - Transmit noise on Z-Wave frequencies to disrupt the network.
-
-**Usage Examples**
-
-- Sniff traffic:
+The setup script will clone Scapy-radio (https://bitbucket.org/cybertools/scapy-radio/) and modify installation files
 
 ```
-ezwave> sniff 90 868.42
+./setup.sh
 ```
 
-- Capture on/off command: 
+## Install Scapy-radio
 
 ```
-ezwave> get on
-ezwave> get off
+cd $HOME/scapy-radio
+./install.sh scapy
+./install.sh blocks
 ```
 
-- Replay captured on command:
-
-``` 
-ezwave> send on
-```
-
-- Brute force network PIN:
+Open [gnuradio prefix]/etc/gnuradio/conf.d in a text editor and append ":/usr/local/share/gnuradio/grc/blocks" to global_blocks_path
 
 ```
-ezwave> bfp 90 868.42
-``` 
-
-- Crack encryption with known plaintext:
-
-```
-ezwave> crack 90 868.42
+./install.sh grc
 ```
 
-- Decrypt captured packets: 
+## Install Wireshark dissector
+
+Copy all files in EZ-Wave/setup/wireshark to [wireshark]/epan/dissectors
 
 ```
-ezwave> decrypt packets.pcap
+cd [wireshark]
+./autogen.sh
+./configure
+make
+sudo make install
+sudo ldconfig
 ```
 
-- Scan for Z-Wave networks:
+# Usage
+
+##ezstumbler
+
+ezstumbler.py [-h, --help] [-p, --passive] [-t, --timeout] [-a, --active] [--homeid]
+	-p, --passive		Conduct a passive scan for a set time (secs)
+	-t, --timeout		Timeout (secs) for scans, default=60
+	-a, --active		Conduct an active scan for a set time (secs)
+	--homeid		4 byte HomeID to scan (ex: 0x1a2b3c4d)
+
+30s passive followed by active scan:
+```
+ezstumbler.py --timeout=30
+```
+
+passive scan:
+```
+ezstumbler.py --passive
+```
+
+active scan:
+```
+ezstumbler.py --active --homeid=0x1a2b3d4e
+```
+
+##ezrecon
+
+ezrecon.py [-h, --help] [-c, --config] [-t, --timeout] homeid nodeid
+	homeid			4 byte HomeID of target network (ex: 0x1a2b3c4d)
+	nodeid			Target device NodeID (in decimal, <233)
+	-c, --config		Include scan of device configuration settings (takes a while)
+	-t, --timeout		Stop scanning after a given time (secs, default=30)
 
 ```
-ezwave> scan 868.0 868.6
+ezrecon.py 0x1a2b3c4d 20
 ```
 
+##ezfingerprint
+
+ezfingerprint.py homeid nodeid
+	homeid			4 byte HomeID of target network (ex: 0x1a2b3c4d)
+	nodeid			Target device NodeID (in decimal, <233)
+
+```
+ezfingerprint.py 0x1a2b3c4d 20
+```
 
